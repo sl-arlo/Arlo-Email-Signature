@@ -54,10 +54,19 @@
     .preview-card.gmail-dark .signature-block p,
     .preview-card.gmail-dark .signature-block span { color:#e5e7eb !important; }
     .preview-card.gmail-dark .signature-block a { color:#93c5fd !important; }
-    .preview-card.gmail-dark .signature-block a.arlo-link { color:#e5e7eb !important; }
-    .preview-card.gmail-dark .signature-block .sig-role { color:#cbd5e1 !important; }
+    .preview-card.gmail-dark .signature-block a.arlo-link { color:#B3E0C8 !important; }
+    .preview-card.gmail-dark .signature-block .sig-role,
+    .preview-card.gmail-dark .signature-block .sig-phone,
+    .preview-card.gmail-dark .signature-block .sig-phone-link,
+    .preview-card.gmail-dark .signature-block .sig-email,
+    .preview-card.gmail-dark .signature-block .sig-email-link { color:#cbd5e1 !important; }
     /* Any hairline borders inside signatures (if present) */
     .preview-card.gmail-dark .signature-block [style*="border-bottom:1px solid #eee"] { border-bottom-color:#334155 !important; }
+
+    /* Tips section */
+    .tips-section { margin-top:24px; padding:16px; background:#f8faf9; border:1px solid #e5e7eb; border-radius:10px; }
+    .tips-section h3 { margin:0 0 10px 0; font-size:14px; font-weight:600; color:#1D1F20; }
+    .tips-section p { margin:0; font-size:13px; line-height:20px; color:#434647; }
   </style>
 
 </head>
@@ -111,6 +120,7 @@
       </div>
     </div>
 
+    <div class="preview-col">
     <div class="preview-card" id="preview-card">
       <div class="preview-header">
         <h3 class="label" style="margin:0; font-size: 16px;">Preview</h3>
@@ -279,6 +289,10 @@
             <button class="btn" id="btn-copy-3" type="button">Copy signature</button>
           </div>
         </div>
+      </div>
+      <div class="tips-section">
+        <h3>Tips</h3>
+        <p><strong>We recommend pasting your signature in Firefox</strong> for the best result. In Safari, formatting can sometimes look off. In Chrome, links in your signature will get the default underline style—this won’t appear right after you paste, but after you refresh the Gmail settings page or start using the signature. If the underline doesn’t bother you, Chrome is fine; for a cleaner look, use Firefox.</p>
       </div>
     </div>
     
