@@ -100,6 +100,22 @@
           <span>Show in signature</span>
         </label>
       </div>
+      <div class="row">
+        <p class="label">LinkedIn URL</p>
+        <input class="input" id="field-linkedin" type="text" placeholder="https://www.linkedin.com/company/joinarlo/" value="https://www.linkedin.com/company/joinarlo/">
+        <label style="display:flex; align-items:center; gap:6px; margin-top:6px; font-size:13px; color:#434647; cursor:pointer;">
+          <input type="checkbox" id="toggle-linkedin" checked>
+          <span>Show in signature</span>
+        </label>
+      </div>
+      <div class="row">
+        <p class="label">Book a Call URL</p>
+        <input class="input" id="field-bookacall" type="text" placeholder="https://www.joinarlo.com/" value="https://www.joinarlo.com/">
+        <label style="display:flex; align-items:center; gap:6px; margin-top:6px; font-size:13px; color:#434647; cursor:pointer;">
+          <input type="checkbox" id="toggle-bookacall" checked>
+          <span>Show in signature</span>
+        </label>
+      </div>
       </div>
 
       <!-- How to Add (left column under inputs on wide view) -->
@@ -250,14 +266,14 @@
                     <tr class="sig-email-row">
                       <td style="font-size:14px; line-height:20px; color:#2D3C36;"><a href="mailto:" class="sig-email-link" style="color:#2D3C36; text-decoration:none;" title="Email"><span class="sig-email"></span></a></td>
                     </tr>
-                    <tr>
+                    <tr class="sig-links-row">
                       <td style="font-size:14px; line-height:20px; color:#2D3C36; padding-top:5px;" valign="middle">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table; vertical-align:middle;">
                           <tr>
-                            <td valign="middle" style="padding-right:4px;"><a class="arlo-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;"><img src="src/linkedin.png" width="18" height="18" alt="LinkedIn" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
-                            <td valign="middle" style="padding-right:12px;"><a class="arlo-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;">LinkedIn</a></td>
-                            <td valign="middle" style="padding-right:4px;"><a class="arlo-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;"><img src="src/phone.png" width="18" height="18" alt="Book a Call" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
-                            <td valign="middle"><a class="arlo-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;">Book a Call</a></td>
+                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:4px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;"><img src="src/linkedin.png" width="18" height="18" alt="LinkedIn" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
+                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:12px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;">LinkedIn</a></td>
+                            <td class="sig-bookacall-wrap" valign="middle" style="padding-right:4px;"><a class="arlo-link sig-bookacall-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;"><img src="src/phone.png" width="18" height="18" alt="Book a Call" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
+                            <td class="sig-bookacall-wrap" valign="middle"><a class="arlo-link sig-bookacall-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;">Book a Call</a></td>
                           </tr>
                         </table>
                       </td>
@@ -310,12 +326,25 @@
       const emailRows = Array.from(document.querySelectorAll('.sig-email-row'));
       const togglePhone = document.getElementById('toggle-phone');
       const toggleEmail = document.getElementById('toggle-email');
+      const linkedinEl = document.getElementById('field-linkedin');
+      const bookacallEl = document.getElementById('field-bookacall');
+      const toggleLinkedin = document.getElementById('toggle-linkedin');
+      const toggleBookacall = document.getElementById('toggle-bookacall');
+      const linkedinLinks = Array.from(document.querySelectorAll('.sig-linkedin-link'));
+      const bookacallLinks = Array.from(document.querySelectorAll('.sig-bookacall-link'));
+      const linkedinWraps = Array.from(document.querySelectorAll('.sig-linkedin-wrap'));
+      const bookacallWraps = Array.from(document.querySelectorAll('.sig-bookacall-wrap'));
+      const linksRows = Array.from(document.querySelectorAll('.sig-links-row'));
 
       function update(){
         const name = (nameEl.value || '').trim() || 'Your Name';
         const role = (roleEl.value || '').trim() || 'Your Title';
         const phone = (phoneEl.value || '').trim();
         const email = (emailEl.value || '').trim();
+        const linkedinUrl = (linkedinEl && linkedinEl.value || '').trim() || '#';
+        const bookacallUrl = (bookacallEl && bookacallEl.value || '').trim() || '#';
+        const showLinkedin = toggleLinkedin && toggleLinkedin.checked;
+        const showBookacall = toggleBookacall && toggleBookacall.checked;
         nameTargets.forEach(el => el.textContent = name);
         roleTargets.forEach(el => el.textContent = role);
         phoneTargets.forEach(el => el.textContent = phone);
@@ -324,6 +353,11 @@
         emailLinks.forEach(link => link.setAttribute('href', 'mailto:' + email));
         phoneRows.forEach(row => { row.style.display = togglePhone && togglePhone.checked ? '' : 'none'; });
         emailRows.forEach(row => { row.style.display = toggleEmail && toggleEmail.checked ? '' : 'none'; });
+        linkedinLinks.forEach(link => link.setAttribute('href', linkedinUrl));
+        bookacallLinks.forEach(link => link.setAttribute('href', bookacallUrl));
+        linksRows.forEach(row => { row.style.display = (showLinkedin || showBookacall) ? '' : 'none'; });
+        linkedinWraps.forEach(el => { el.style.display = showLinkedin ? '' : 'none'; });
+        bookacallWraps.forEach(el => { el.style.display = showBookacall ? '' : 'none'; });
       }
       nameEl.addEventListener('input', update);
       roleEl.addEventListener('input', update);
@@ -331,6 +365,10 @@
       emailEl.addEventListener('input', update);
       if (togglePhone) togglePhone.addEventListener('change', update);
       if (toggleEmail) toggleEmail.addEventListener('change', update);
+      if (linkedinEl) linkedinEl.addEventListener('input', update);
+      if (bookacallEl) bookacallEl.addEventListener('input', update);
+      if (toggleLinkedin) toggleLinkedin.addEventListener('change', update);
+      if (toggleBookacall) toggleBookacall.addEventListener('change', update);
       update();
 
       async function copyHTML(node){
