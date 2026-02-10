@@ -25,7 +25,8 @@
     .preview-card { background:#fff; border:1px dashed #e5e7eb; border-radius:10px; padding:16px; }
     .styles-row { display:flex; gap:12px; align-items:stretch; flex-wrap:nowrap; }
     .style-card { display:flex; flex-direction:column; flex:1 1 0; min-width:0; background:#fff; border:1px dashed #e5e7eb; border-radius:10px; padding:12px; }
-    .style-actions { margin-top:auto; padding-top:10px; text-align:center; }
+    .style-actions { margin-top:auto; padding-top:10px; text-align:center; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+.style-actions .btn { width:100%; box-sizing:border-box; }
     .style-title { font-size:12px; color:#6b7280; margin:0 0 8px 0; text-align:center; }
     @media (max-width: 760px) { .grid { grid-template-columns:1fr; } }
     table img { display:block; }
@@ -102,7 +103,7 @@
       </div>
       <div class="row">
         <p class="label">LinkedIn URL</p>
-        <input class="input" id="field-linkedin" type="text" placeholder="https://www.linkedin.com/company/joinarlo/" value="https://www.linkedin.com/company/joinarlo/">
+        <input class="input" id="field-linkedin" type="text" placeholder="https://www.linkedin.com/company/arlo-health" value="https://www.linkedin.com/company/arlo-health">
         <label style="display:flex; align-items:center; gap:6px; margin-top:6px; font-size:13px; color:#434647; cursor:pointer;">
           <input type="checkbox" id="toggle-linkedin" checked>
           <span>Show in signature</span>
@@ -180,6 +181,7 @@
           <!-- ======== SIGNATURE END ======== -->
           <div class="style-actions">
             <button class="btn" id="btn-copy-1" type="button">Copy signature</button>
+            <button class="btn secondary" id="btn-copy-html-1" type="button">Copy HTML</button>
           </div>
         </div>
 
@@ -233,6 +235,7 @@
           </div>
           <div class="style-actions">
             <button class="btn" id="btn-copy-2" type="button">Copy signature</button>
+            <button class="btn secondary" id="btn-copy-html-2" type="button">Copy HTML</button>
           </div>
         </div>
 
@@ -270,8 +273,8 @@
                       <td style="font-size:14px; line-height:20px; color:#2D3C36; padding-top:5px;" valign="middle">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table; vertical-align:middle;">
                           <tr>
-                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:4px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;"><img src="src/linkedin.png" width="18" height="18" alt="LinkedIn" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
-                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:12px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/joinarlo/" style="text-decoration:none; color:#0E5741;">LinkedIn</a></td>
+                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:4px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/arlo-health" style="text-decoration:none; color:#0E5741;"><img src="src/linkedin.png" width="18" height="18" alt="LinkedIn" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
+                            <td class="sig-linkedin-wrap" valign="middle" style="padding-right:12px;"><a class="arlo-link sig-linkedin-link" href="https://www.linkedin.com/company/arlo-health" style="text-decoration:none; color:#0E5741;">LinkedIn</a></td>
                             <td class="sig-bookacall-wrap" valign="middle" style="padding-right:4px;"><a class="arlo-link sig-bookacall-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;"><img src="src/phone.png" width="18" height="18" alt="Book a Call" style="display:block; border:0; outline:none; text-decoration:none; vertical-align:middle;"></td>
                             <td class="sig-bookacall-wrap" valign="middle"><a class="arlo-link sig-bookacall-link" href="https://www.joinarlo.com/" style="text-decoration:none; color:#0E5741;">Book a Call</a></td>
                           </tr>
@@ -298,6 +301,7 @@
           </div>
           <div class="style-actions">
             <button class="btn" id="btn-copy-3" type="button">Copy signature</button>
+            <button class="btn secondary" id="btn-copy-html-3" type="button">Copy HTML</button>
           </div>
         </div>
       </div>
@@ -371,10 +375,14 @@
       if (toggleBookacall) toggleBookacall.addEventListener('change', update);
       update();
 
-      async function copyHTML(node){
+      function getSignatureHTML(node){
         let html = node.innerHTML;
         const imageBaseUrl = 'https://sl-arlo.github.io/Arlo-Email-Signature/';
-        html = html.replace(/\bsrc="(src\/[^"]+)"/g, function(_, path) { return 'src="' + imageBaseUrl + path + '"'; });
+        return html.replace(/\bsrc="(src\/[^"]+)"/g, function(_, path) { return 'src="' + imageBaseUrl + path + '"'; });
+      }
+
+      async function copyHTML(node){
+        const html = getSignatureHTML(node);
         const text = node.innerText || node.textContent || '';
         if (navigator.clipboard && window.ClipboardItem) {
           try {
@@ -403,6 +411,34 @@
         return ok;
       }
 
+      async function copyHTMLAsText(node){
+        const html = getSignatureHTML(node);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(html);
+            alert('HTML copied to clipboard. You can paste the HTML source wherever needed.');
+            return true;
+          } catch (err) {
+            // fallback below
+          }
+        }
+        // Fallback: use a temporary textarea
+        const ta = document.createElement('textarea');
+        ta.value = html;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (ok) {
+          alert('HTML copied to clipboard. You can paste the HTML source wherever needed.');
+        } else {
+          alert('Could not copy. Please try again or copy the signature manually.');
+        }
+        return ok;
+      }
+
       // Wire up per-style copy buttons
       const copyButtons = [
         { btn: document.getElementById('btn-copy-1'), block: document.getElementById('signature-block-1') },
@@ -411,6 +447,15 @@
       ];
       copyButtons.forEach(({btn, block}) => {
         if (btn && block) btn.addEventListener('click', function(){ copyHTML(block); });
+      });
+
+      const copyHTMLButtons = [
+        { btn: document.getElementById('btn-copy-html-1'), block: document.getElementById('signature-block-1') },
+        { btn: document.getElementById('btn-copy-html-2'), block: document.getElementById('signature-block-2') },
+        { btn: document.getElementById('btn-copy-html-3'), block: document.getElementById('signature-block-3') },
+      ];
+      copyHTMLButtons.forEach(({btn, block}) => {
+        if (btn && block) btn.addEventListener('click', function(){ copyHTMLAsText(block); });
       });
       // Manual selection: users can select signature content directly if needed.
 
